@@ -1,17 +1,17 @@
 {
-	"name": "completions-sample",
+	"name": "alios-local-completions",
 	"displayName": "Completion Item Provider Sample",
-	"version": "0.0.2",
+	"version": "1.0.0",
 	"publisher": "vscode-samples",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/lusinga/localcomplete"
 	},
 	"bugs": {
-		"url": "https://github.com/Microsoft/vscode-extension-samples/issues"
+		"url": "https://github.com/lusinga/localcomplete/issues"
 	},
 	"engines": {
-		"vscode": "^1.32.0"
+		"vscode": "^1.40.0"
 	},
 	"categories": [
 		"Other"
@@ -24,12 +24,12 @@
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"lint": "tslint -p ./",
-		"watch": "tsc -watch -p ./"
+		"watch": "tsc -p ./"
 	},
 	"devDependencies": {
 		"@types/node": "^10.12.18",
 		"tslint": "^5.16.0",
-		"typescript": "^3.5.1",
-		"@types/vscode": "^1.32.0"
+		"typescript": "^3.6.4",
+		"@types/vscode": "^1.40.0"
 	}
 }

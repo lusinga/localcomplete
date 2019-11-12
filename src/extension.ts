@@ -9,6 +9,11 @@ export function activate(context: vscode.ExtensionContext) {
 	let provider1 = vscode.languages.registerCompletionItemProvider('plaintext', {
 
 		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+			console.log('document version=' + document.version);
+			console.log('text is:' + document.getText());
+			console.log('URI is:' + document.uri);
+			console.log('Language ID=' + document.languageId);
+			console.log('Line Count=' + document.lineCount);
 
 			// a simple completion item which inserts `Hello World!`
 			const simpleCompletion = new vscode.CompletionItem('Hello World!');
