@@ -1,29 +1,45 @@
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
 
 import * as vscode from 'vscode';
+import axios from 'axios';
+
+const instance = axios.create({
+	baseURL: 'http://127.0.0.1:30000',
+	timeout: 10000
+});
 
 export function activate(context: vscode.ExtensionContext) {
 
-	let provider1 = vscode.languages.registerCompletionItemProvider('plaintext', {
+	let provider1 = vscode.languages.registerCompletionItemProvider('javascript', {
 
-		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+		async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
 			console.log('document version=' + document.version);
 			console.log('text is:' + document.getText());
 			console.log('URI is:' + document.uri);
 			console.log('Language ID=' + document.languageId);
 			console.log('Line Count=' + document.lineCount);
 
+			let item: vscode.CompletionItem = await instance.post('/complete', { code: document.getText() })
+				.then(function (response: any) {
+					console.log('complete: ' + response.data);
+					return new vscode.CompletionItem(response.data);
+				})
+				.catch(function (error: Error) {
+					console.log(error);
+					return new vscode.CompletionItem('No suggestion');
+				});
+
+			return [item];
+
+			/*
 			// a simple completion item which inserts `Hello World!`
-			const simpleCompletion = new vscode.CompletionItem('Hello World!');
+			const simpleCompletion = new vscode.CompletionItem('console.log');
 
 			// a completion item that inserts its text as snippet,
 			// the `insertText`-property is a `SnippetString` which will be
 			// honored by the editor.
-			const snippetCompletion = new vscode.CompletionItem('Good part of the day');
-			snippetCompletion.insertText = new vscode.SnippetString('Good ${1|morning,afternoon,evening|}. It is ${1}, right?');
-			snippetCompletion.documentation = new vscode.MarkdownString("Inserts a snippet that lets you select the _appropriate_ part of the day for your greeting.");
+			const snippetCompletion = new vscode.CompletionItem('console');
+			snippetCompletion.insertText = new vscode.SnippetString('console.${1|log,warn,error|}. Is it console.${1}?');
+			snippetCompletion.documentation = new vscode.MarkdownString("Code snippet for console");
 
 			// a completion item that can be accepted by a commit character,
 			// the `commitCharacters`-property is set which means that the completion will
@@ -47,10 +63,12 @@ export function activate(context: vscode.ExtensionContext) {
 				snippetCompletion,
 				commitCharacterCompletion,
 				commandCompletion
-			];
+			];*/
+
 		}
 	});
 
+	/*
 	const provider2 = vscode.languages.registerCompletionItemProvider(
 		'plaintext',
 		{
@@ -73,5 +91,6 @@ export function activate(context: vscode.ExtensionContext) {
 		'.' // triggered whenever a '.' is being typed
 	);
 
-	context.subscriptions.push(provider1, provider2);
+	context.subscriptions.push(provider1, provider2);*/
+	context.subscriptions.push(provider1);
 }
