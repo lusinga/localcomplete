@@ -7,6 +7,27 @@ const instance = axios.create({
 	timeout: 10000
 });
 
+
+// 获取当前行代码
+export function getLine(document: vscode.TextDocument, position: vscode.Position): string {
+	let current_line: number = position.line;
+	let current_row: number = position.character;
+	console.log("Current line=" + current_line);
+	console.log("Current row = " + current_row);
+
+	let lines = document.lineCount;
+	console.log("Lines:" + lines);
+
+	let code: string = "";
+
+	if (current_line < lines) {
+		let codeLine = document.lineAt(current_line);
+		code = codeLine.text;
+	}
+	console.log("code=" + code);
+	return code;
+}
+
 export function activate(context: vscode.ExtensionContext) {
 
 	let provider1 = vscode.languages.registerCompletionItemProvider('javascript', {
@@ -18,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
 			console.log('Language ID=' + document.languageId);
 			console.log('Line Count=' + document.lineCount);
 
-			let item: vscode.CompletionItem = await instance.post('/complete', { code: document.getText() })
+			let item: vscode.CompletionItem = await instance.post('/complete', { code: getLine(document, position) })
 				.then(function (response: any) {
 					console.log('complete: ' + response.data);
 					return new vscode.CompletionItem(response.data);
