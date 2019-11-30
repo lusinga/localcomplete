@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# 位置编码
+
 class PositionalEncoding(nn.Module):
 
     def __init__(self, d_model, dropout=0.1, max_len=5000):
@@ -21,6 +21,8 @@ class PositionalEncoding(nn.Module):
     def forward(self, x):
         x = x + self.pe[:x.size(0), :]
         return self.dropout(x)
+
+
 
 class TransformerModel(nn.Module):
 
@@ -62,50 +64,32 @@ class TransformerModel(nn.Module):
         return output
 
 
-# 引入WikiText2训练语言模型
 import torchtext
 from torchtext.data.utils import get_tokenizer
-TEXT = torchtext.data.Field()
-#train_txt, val_txt, test_txt = torchtext.datasets.LanguageModelingDataset.splits(path="./programs.data")
-#print(train_txt)
-#TEXT.build_vocab(train_txt)
+TEXT = torchtext.data.Field(tokenize=get_tokenizer("basic_english"),
+                            init_token='<sos>',
+                            eos_token='<eos>',
+                            lower=True)
+train_txt, val_txt, test_txt = torchtext.datasets.WikiText2.splits(TEXT)
+TEXT.build_vocab(train_txt)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-file1 = open('./programs.data','r',encoding='utf-8')
-texts = file1.readlines()
-TEXT.build_vocab(texts)
-
 def batchify(data, bsz):
-    text1 = data.examples[0].text
-    print(text1)
-    data = TEXT.numericalize([text1])
-    # Divide the dataset into bsz parts.
-    nbatch = data.size(0) // bsz
-    # Trim off any extra elements that wouldn't cleanly fit (remainders).
-    data = data.narrow(0, 0, nbatch * bsz)
-    # Evenly divide the data across the bsz batches.
-    data = data.view(bsz, -1).t().contiguous()
-    return data.to(device)
-
-
-def batchify2(texts, bsz):
-
-    data = TEXT.numericalize([texts])
-
-    nbatch = data.size(0)
-    print('nbatch=',nbatch)
-
-    data = data.narrow(0,0, nbatch * bsz)
-
-    data = data.view(bsz, -1).t().contiguous()
-    return data.to(device)
+	data = TEXT.numericalize([data.examples[0].text])
+	# Divide the dataset into bsz parts.
+	nbatch = data.size(0) // bsz
+	print('nbatch=',nbatch)
+	# Trim off any extra elements that wouldn't cleanly fit (remainders).
+	data = data.narrow(0, 0, nbatch * bsz)
+	# Evenly divide the data across the bsz batches.
+	data = data.view(bsz, -1).t().contiguous()
+	return data.to(device)
 
 batch_size = 20
 eval_batch_size = 10
-train_data = batchify2(texts, batch_size)
-#train_data = batchify2(train_txt, batch_size)
-#val_data = batchify(val_txt, eval_batch_size)
-#test_data = batchify(test_txt, eval_batch_size)
+train_data = batchify(train_txt, batch_size)
+val_data = batchify(val_txt, eval_batch_size)
+test_data = batchify(test_txt, eval_batch_size)
 
 bptt = 35
 def get_batch(source, i):
@@ -177,22 +161,22 @@ best_model = None
 for epoch in range(1, epochs + 1):
     epoch_start_time = time.time()
     train()
-    #val_loss = evaluate(model, val_data)
+    val_loss = evaluate(model, val_data)
     print('-' * 89)
-    #print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
-    #      'valid ppl {:8.2f}'.format(epoch, (time.time() - epoch_start_time),
-    #                                 val_loss, math.exp(val_loss)))
-    #print('-' * 89)
+    print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
+          'valid ppl {:8.2f}'.format(epoch, (time.time() - epoch_start_time),
+                                     val_loss, math.exp(val_loss)))
+    print('-' * 89)
 
-    #if val_loss < best_val_loss:
-    #    best_val_loss = val_loss
-    #    best_model = model
+    if val_loss < best_val_loss:
+        best_val_loss = val_loss
+        best_model = model
 
     scheduler.step()
 
 
-#test_loss = evaluate(best_model, test_data)
-#print('=' * 89)
-#print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
-#    test_loss, math.exp(test_loss)))
+test_loss = evaluate(best_model, test_data)
+print('=' * 89)
+print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
+    test_loss, math.exp(test_loss)))
 print('=' * 89)
