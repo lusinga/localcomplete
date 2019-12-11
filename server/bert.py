@@ -67,4 +67,4 @@ with torch.no_grad():
 predicted_index = torch.argmax(predictions[0, masked_index]).item()
 predicted_token = tokenizer.convert_ids_to_tokens([predicted_index])[0]
 print(predicted_token)
-assert predicted_token == 'henson'
+
