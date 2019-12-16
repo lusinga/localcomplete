@@ -2,7 +2,7 @@ import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
 # 加载词汇表
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+tokenizer = GPT2Tokenizer.from_pretrained('/workspace/xulun/out4/')
 
 # 输入待补全的文本
 text = 'function walk(dir, fn) { if (fs.existsSync(dir)) { let stat ='
@@ -12,11 +12,11 @@ text = 'function walk(dir, fn) { if (fs.existsSync(dir)) { let stat ='
 predicted_text = text
 
 # 加载模型中预训练好的权值
-model = GPT2LMHeadModel.from_pretrained('gpt2')
+model = GPT2LMHeadModel.from_pretrained('/workspace/xulun/out4/')
 
 # 设置为eval模式，这样就不会执行训练模式下的Dropout过程
 model.eval()
-model.to('cuda')
+#model.to('cuda')
 
 # 每一个只能补一个token出来，补一句话需要多次，30次是我拍脑袋的
 for i in range(0,30):
@@ -28,7 +28,7 @@ for i in range(0,30):
     tokens_tensor = torch.tensor([indexed_tokens])
 
     # 使用GPU进行加速，诚实地讲速度不太快
-    tokens_tensor = tokens_tensor.to('cuda')
+    #tokens_tensor = tokens_tensor.to('cuda')
 
     # 进行推理
     with torch.no_grad():
