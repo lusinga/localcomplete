@@ -1,8 +1,8 @@
 {
 	"name": "alios-local-completions",
-	"displayName": "Completion Item Provider Sample",
+	"displayName": "AliOS Code Completion",
 	"version": "1.0.0",
-	"publisher": "vscode-samples",
+	"publisher": "xulun",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/lusinga/localcomplete"
