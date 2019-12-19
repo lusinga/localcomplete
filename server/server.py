@@ -18,7 +18,7 @@ def single_process_code(text):
     model.eval()
 
     # 使用GPU进行加速，诚实地讲速度不太快
-    tokens_tensor = tokens_tensor.to('cuda')
+    #tokens_tensor = tokens_tensor.to('cuda')
 
     # 进行推理
     with torch.no_grad():
@@ -28,10 +28,13 @@ def single_process_code(text):
         # 获取预测的下一个子词
     predicted_index = torch.argmax(predictions[0, -1, :]).item()
     # 解码成我们都读懂的文本
-    predicted_text = tokenizer.decode(indexed_tokens + [predicted_index])
+    predicted_text = tokenizer.decode([predicted_index])
     # 打印输入结果
-    print(predicted_text)
-    return predicted_text
+    #print(predicted_text)
+    result = (text + predicted_text).strip()
+    #predicted_text = predicted_text + ""
+    print(result)
+    return result
 
 
 def process_code(text):
