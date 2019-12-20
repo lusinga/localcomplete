@@ -67,7 +67,7 @@ def process_code(text):
             indexed_tokens += [token.tolist()]
             tokens_tensor = token.unsqueeze(0)
 
-    predicted_text = tokenizer.decode(tokens_tensor)
+    predicted_text = tokenizer.decode([indexed_tokens])
     print(time.time()-begin)
     print(predicted_text)
 
