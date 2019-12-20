@@ -1,36 +1,19 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
+import {getLine, getLastDot} from './codeutil';
+
 
 const instance = axios.create({
-	baseURL: 'http://127.0.0.1:30000',
+	baseURL: 'http://11.163.182.174:30000',
+	//baseURL: 'http://11.163.182.76:30000',
 	timeout: 10000
 });
 
 
-// 获取当前行代码
-export function getLine(document: vscode.TextDocument, position: vscode.Position): string {
-	let current_line: number = position.line;
-	let current_row: number = position.character;
-	console.log("Current line=" + current_line);
-	console.log("Current row = " + current_row);
-
-	let lines = document.lineCount;
-	console.log("Lines:" + lines);
-
-	let code: string = "";
-
-	if (current_line < lines) {
-		let codeLine = document.lineAt(current_line);
-		code = codeLine.text;
-	}
-	console.log("code=" + code);
-	return code;
-}
-
 export function activate(context: vscode.ExtensionContext) {
 
-	let provider1 = vscode.languages.registerCompletionItemProvider('javascript', {
+	let provider1 = vscode.languages.registerCompletionItemProvider(['javascript','typescript'], {
 
 		async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
 			console.log('document version=' + document.version);
@@ -38,11 +21,18 @@ export function activate(context: vscode.ExtensionContext) {
 			console.log('URI is:' + document.uri);
 			console.log('Language ID=' + document.languageId);
 			console.log('Line Count=' + document.lineCount);
+			const origText = getLine(document, position).trim();
 
-			let item: vscode.CompletionItem = await instance.post('/complete', { code: getLine(document, position) })
+			let item: vscode.CompletionItem = await instance.post('/complete', { code: origText})
 				.then(function (response: any) {
-					console.log('complete: ' + response.data);
-					return new vscode.CompletionItem(response.data);
+					let compstr: string = <string> response.data.trim();
+					console.log('complete: ' + compstr);
+					let aliOSItem = new vscode.CompletionItem(compstr);
+					aliOSItem.insertText = getLastDot(compstr);
+					console.log('complete: ' + compstr);
+					console.log(origText.length);
+					console.log('insertText:' + getLastDot(compstr));
+					return aliOSItem;
 				})
 				.catch(function (error: Error) {
 					console.log(error);

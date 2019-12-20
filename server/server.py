@@ -8,9 +8,9 @@ import time
 
 def single_process_code(text):
     begin = time.time()
-        # 输入待补全的文本
+    # 输入待补全的文本
 
-        # 以上次预测结果作为本次的输入，所谓的自回归
+    # 以上次预测结果作为本次的输入，所谓的自回归
     indexed_tokens = tokenizer.encode(text)
 
     # 将读出的索引标记转化成PyTorch向量
@@ -32,8 +32,8 @@ def single_process_code(text):
     # 解码成我们都读懂的文本
     predicted_text = tokenizer.decode([predicted_index])
     # 打印输入结果
-    #print(predicted_text)
-    result = (text + predicted_text)#.strip()
+    # print(predicted_text)
+    result = (text + predicted_text)  # .strip()
     #predicted_text = predicted_text + ""
     print(result)
     print(time.time()-begin)
@@ -41,7 +41,7 @@ def single_process_code(text):
 
 
 def process_code(text):
-
+    begin = time.time()
     # 将输入字符串编码
     indexed_tokens = tokenizer.encode(text)
 
@@ -57,7 +57,7 @@ def process_code(text):
     past = None
 
     # 每一个只能补一个token出来，补一句话需要多次，30次是我拍脑袋的
-    for i in range(0,10):
+    for i in range(0, 3):
 
         # 进行推理
         with torch.no_grad():
@@ -68,6 +68,7 @@ def process_code(text):
             tokens_tensor = token.unsqueeze(0)
 
     predicted_text = tokenizer.decode(tokens_tensor)
+    print(time.time()-begin)
     print(predicted_text)
 
     return predicted_text
@@ -93,7 +94,8 @@ def code_complete():
     print('Received complete post')
     code = request.data.decode()
     code2 = json.loads(code)
-    return single_process_code(code2.get('code'))
+    # return single_process_code(code2.get('code'))
+    return process_code(code2.get('code'))
 
 
 MODEL = '/workspace/xulun/out4/'
@@ -103,6 +105,6 @@ tokenizer = GPT2Tokenizer.from_pretrained(MODEL)
 
 # 加载模型中预训练好的权值
 model = GPT2LMHeadModel.from_pretrained(MODEL)
-#model.to('cuda')
+# model.to('cuda')
 
-app.run(host='0.0.0.0',port=30000, debug=True)
+app.run(host='0.0.0.0', port=30000, debug=True)
