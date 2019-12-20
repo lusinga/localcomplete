@@ -3,9 +3,11 @@ from flask import request
 import json
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
+import time
 
 
 def single_process_code(text):
+    begin = time.time()
         # 输入待补全的文本
 
         # 以上次预测结果作为本次的输入，所谓的自回归
@@ -31,9 +33,10 @@ def single_process_code(text):
     predicted_text = tokenizer.decode([predicted_index])
     # 打印输入结果
     #print(predicted_text)
-    result = (text + predicted_text).strip()
+    result = (text + predicted_text)#.strip()
     #predicted_text = predicted_text + ""
     print(result)
+    print(time.time()-begin)
     return result
 
 
