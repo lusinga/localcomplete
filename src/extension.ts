@@ -1,12 +1,12 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
-import {getLine, getLastDot} from './codeutil';
+import {getLine, getLastDot, processCompletion} from './codeutil';
 
 
 const instance = axios.create({
-	baseURL: 'http://11.163.182.174:30000',
-	//baseURL: 'http://11.163.182.76:30000',
+	//baseURL: 'http://11.163.182.174:30000',
+	baseURL: 'http://11.163.182.76:30000',
 	timeout: 10000
 });
 
@@ -26,13 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 			let item: vscode.CompletionItem = await instance.post('/complete', { code: origText})
 				.then(function (response: any) {
 					let compstr: string = <string> response.data.trim();
-					console.log('complete: ' + compstr);
-					let aliOSItem = new vscode.CompletionItem(compstr);
-					aliOSItem.insertText = getLastDot(compstr);
-					console.log('complete: ' + compstr);
-					console.log(origText.length);
-					console.log('insertText:' + getLastDot(compstr));
-					return aliOSItem;
+					return processCompletion(compstr, origText);
 				})
 				.catch(function (error: Error) {
 					console.log(error);
