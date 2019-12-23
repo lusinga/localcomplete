@@ -1,6 +1,9 @@
 import torch
 from transformers import XLNetTokenizer, XLNetLMHeadModel
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 tokenizer = XLNetTokenizer.from_pretrained('xlnet-large-cased')
 model = XLNetLMHeadModel.from_pretrained('xlnet-large-cased')
 # We show how to setup inputs to predict a next token using a bi-directional context.

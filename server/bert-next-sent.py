@@ -1,6 +1,9 @@
 import torch
 from transformers import BertTokenizer, BertForNextSentencePrediction
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertForNextSentencePrediction.from_pretrained('bert-base-uncased')
 input_ids = torch.tensor(tokenizer.encode("Hello, my dog is cute")).unsqueeze(0)  # Batch size 1

@@ -1,6 +1,9 @@
 import torch
 from transformers import BertTokenizer, BertForPreTraining
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertForPreTraining.from_pretrained('bert-base-uncased')
 input_ids = torch.tensor(tokenizer.encode("Hello,world")).unsqueeze(0)  # Batch size 1

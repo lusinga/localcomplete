@@ -1,6 +1,9 @@
 import torch
 from transformers import BertTokenizer, BertForMultipleChoice
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertForMultipleChoice.from_pretrained('bert-base-uncased')
 choices = ["Hello, my dog is cute", "Hello, my cat is amazing"]

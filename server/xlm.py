@@ -2,6 +2,9 @@ import torch
 
 from transformers import XLMTokenizer, XLMWithLMHeadModel
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 tokenizer = XLMTokenizer.from_pretrained('xlm-mlm-17-1280')
 model = XLMWithLMHeadModel.from_pretrained('xlm-mlm-17-1280')
 input_ids = torch.tensor(tokenizer.encode("Hello, my dog is cute")).unsqueeze(0)  # Batch size 1

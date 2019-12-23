@@ -1,6 +1,9 @@
 import torch
 from transformers import TransfoXLTokenizer, TransfoXLLMHeadModel
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 tokenizer = TransfoXLTokenizer.from_pretrained('transfo-xl-wt103')
 model = TransfoXLLMHeadModel.from_pretrained('transfo-xl-wt103')
 input_ids = torch.tensor(tokenizer.encode("Hello, my dog is cute")).unsqueeze(0)  # Batch size 1

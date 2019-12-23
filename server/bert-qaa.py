@@ -1,6 +1,9 @@
 import torch
 from transformers import BertTokenizer, BertForQuestionAnswering
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertForQuestionAnswering.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
 question, text = "What is an apple?", "An apple is a kind of fruit."

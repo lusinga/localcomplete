@@ -1,6 +1,9 @@
 import torch
 from transformers import GPT2Tokenizer, GPT2DoubleHeadsModel
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 model = GPT2DoubleHeadsModel.from_pretrained('gpt2')
 

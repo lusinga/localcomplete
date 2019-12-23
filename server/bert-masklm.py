@@ -1,6 +1,9 @@
 import torch
 from transformers import BertTokenizer, BertForMaskedLM
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertForMaskedLM.from_pretrained('bert-base-uncased')
 input_ids = torch.tensor(tokenizer.encode("#include <iostream>")).unsqueeze(0)  # Batch size 1

@@ -1,6 +1,8 @@
 import torch
 from transformers import AlbertTokenizer, AlbertForQuestionAnswering
 
+import logging
+logging.basicConfig(level=logging.INFO)
 
 tokenizer = AlbertTokenizer.from_pretrained('albert-base-v2')
 model = AlbertForQuestionAnswering.from_pretrained('albert-base-v2')

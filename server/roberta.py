@@ -1,6 +1,8 @@
 import torch
 from transformers import RobertaTokenizer, RobertaForMaskedLM
 
+import logging
+logging.basicConfig(level=logging.INFO)
 
 tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
 model = RobertaForMaskedLM.from_pretrained('roberta-base')
