@@ -118,7 +118,8 @@ def code_complete():
 
 
 CUDA = False
-MODEL = '/workspace/xulun/out4/'
+# MODEL = '/workspace/xulun/out4/'
+MODEL = '/workspace/xulun/out_banmalite/'
 
 # 加载词汇表
 tokenizer = GPT2Tokenizer.from_pretrained(MODEL)
