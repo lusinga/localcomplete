@@ -4,6 +4,7 @@ import json
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 import time
+from model_status import ModelStatus
 
 
 def single_process_code(text):
@@ -40,13 +41,13 @@ def single_process_code(text):
     return result
 
 
-def process_code(text):
+def process_code(text, is_cuda):
     begin = time.time()
 
     predicted_text = text
 
     # 每一个只能补一个token出来，补一句话需要多次，30次是我拍脑袋的
-    for i in range(0,5):
+    for i in range(0, 5):
 
         # 以上次预测结果作为本次的输入，所谓的自回归
         indexed_tokens = tokenizer.encode(predicted_text)
@@ -58,8 +59,8 @@ def process_code(text):
         model.eval()
 
         # 使用GPU进行加速，诚实地讲速度不太快
-        #tokens_tensor = tokens_tensor.to('cuda')
-        #model.to('cuda')
+        if(is_cuda):
+            tokens_tensor = tokens_tensor.to('cuda')
 
         # 进行推理
         with torch.no_grad():
@@ -76,7 +77,13 @@ def process_code(text):
     return predicted_text
 
 
+# TODO: Fast engine
+def fast_engine(text):
+    return '<BUSY>'
+
+
 app = Flask(__name__)
+m_status = ModelStatus()
 
 
 @app.route('/')
@@ -96,10 +103,21 @@ def code_complete():
     print('Received complete post')
     code = request.data.decode()
     code2 = json.loads(code)
+    print('Post is ' + code2.get('code'))
     # return single_process_code(code2.get('code'))
-    return process_code(code2.get('code'))
+    global m_status
+    global CUDA
+    status = m_status.check()
+    result = ''
+    if not status:
+        result = process_code(code2.get('code'),CUDA)
+        m_status.finish()
+    else:
+        result = fast_engine(code2.get('code'))
+    return result
 
 
+CUDA = False
 MODEL = '/workspace/xulun/out4/'
 
 # 加载词汇表
@@ -107,6 +125,7 @@ tokenizer = GPT2Tokenizer.from_pretrained(MODEL)
 
 # 加载模型中预训练好的权值
 model = GPT2LMHeadModel.from_pretrained(MODEL)
-# model.to('cuda')
+if CUDA:
+    model.to('cuda')
 
 app.run(host='0.0.0.0', port=30000, debug=True)

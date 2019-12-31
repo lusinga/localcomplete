@@ -5,8 +5,10 @@ import {getLine, getLastDot, processCompletion} from './codeutil';
 
 
 const instance = axios.create({
-	//baseURL: 'http://11.163.182.174:30000',
-	baseURL: 'http://11.163.182.76:30000',
+	baseURL: 'http://11.163.182.174:30000',
+	//baseURL: 'http://11.163.182.76:30000',
+	// baseURL: 'http://118.31.32.52:30000/',
+	// baseURL: 'http://118.31.32.52:30001/',
 	timeout: 10000
 });
 

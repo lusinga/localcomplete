@@ -76,11 +76,13 @@ export function processCompletion(compstr: string, origText: string): vscode.Com
 	}
 	currentLine = currentLine.trim();
 	origText = origText.trim();
-	let aliOSItem = new vscode.CompletionItem(currentLine);
+	
 	//将最后一个后面不为空的"."前面的字符截取掉。
 	//因为补全的新信息中也可能有"."，所以先在源数据中做判断，取这部分的长度，再去补全结果中把前面这些部分去掉
-
-	aliOSItem.insertText = processDot(origText, currentLine);
+	const insert_text = processDot(origText, currentLine);
+	let aliOSItem = new vscode.CompletionItem(insert_text);
+	aliOSItem.insertText = insert_text;
+	aliOSItem.documentation = "Banma OS IDE";
 	console.log('complete: ' + compstr);
 	console.log(origText.length);
 	console.log('insertText:' + aliOSItem.insertText);
