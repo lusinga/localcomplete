@@ -47,7 +47,7 @@ def process_code(text, is_cuda):
     predicted_text = text
 
     # 每一个只能补一个token出来，补一句话需要多次，30次是我拍脑袋的
-    for i in range(0, 5):
+    for i in range(0, 1):
 
         # 以上次预测结果作为本次的输入，所谓的自回归
         indexed_tokens = tokenizer.encode(predicted_text)
@@ -59,7 +59,7 @@ def process_code(text, is_cuda):
         model.eval()
 
         # 使用GPU进行加速，诚实地讲速度不太快
-        if(is_cuda):
+        if is_cuda:
             tokens_tensor = tokens_tensor.to('cuda')
 
         # 进行推理
