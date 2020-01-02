@@ -7,6 +7,7 @@ import time
 from model_status import ModelStatus
 
 
+
 def single_process_code(text):
     begin = time.time()
     # 输入待补全的文本
@@ -46,8 +47,10 @@ def process_code(text, is_cuda):
 
     predicted_text = text
 
+    complete_result = {}
+
     # 每一个只能补一个token出来，补一句话需要多次，30次是我拍脑袋的
-    for i in range(0, 1):
+    for i in range(0, 3):
 
         # 以上次预测结果作为本次的输入，所谓的自回归
         indexed_tokens = tokenizer.encode(predicted_text)
@@ -73,13 +76,17 @@ def process_code(text, is_cuda):
         predicted_text = tokenizer.decode(indexed_tokens + [predicted_index])
         # 打印输入结果
         print(predicted_text)
+        complete_result['code' + str(i)] = predicted_text
     print(time.time()-begin)
-    return predicted_text
+    complete_result['status'] = 0
+    return json.dumps(complete_result)
 
 
 # TODO: Fast engine
 def fast_engine(text):
-    return '<BUSY>'
+    result = {}
+    result['status'] = 1
+    return json.dumps(result)
 
 
 app = Flask(__name__)

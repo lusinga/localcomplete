@@ -8,4 +8,3 @@ console.log(code_obj.status);
 console.log(code_obj.code1);
 console.log(code_obj.code2);
 console.log(code_obj.code3);
-

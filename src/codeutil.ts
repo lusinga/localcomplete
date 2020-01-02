@@ -65,6 +65,22 @@ export function processDot(origStr: string, compStr: string): string {
 }
 
 
+export function checkStatus(jsonstr: string): number{
+	console.log("Jsonstr="+jsonstr);
+	let jsonobj = JSON.parse(jsonstr);
+	let status = jsonobj.status;
+	return status;
+}
+
+export function processCompletionAll(jsonstr: string, origText: string): vscode.CompletionItem[]{
+	const completions = new Array<vscode.CompletionItem>();
+	let jsonobj = JSON.parse(jsonstr);
+	completions.push(processCompletion(jsonobj.code0.trim(),origText));
+	completions.push(processCompletion(jsonobj.code1.trim(),origText));
+	completions.push(processCompletion(jsonobj.code2.trim(),origText));
+	return completions;
+}
+
 export function processCompletion(compstr: string, origText: string): vscode.CompletionItem {
 	console.log('complete: ' + compstr);
 	const compLines = compstr.split('\n');
@@ -82,7 +98,7 @@ export function processCompletion(compstr: string, origText: string): vscode.Com
 	const insert_text = processDot(origText, currentLine);
 	let aliOSItem = new vscode.CompletionItem(insert_text);
 	aliOSItem.insertText = insert_text;
-	aliOSItem.documentation = "Banma OS IDE";
+	aliOSItem.documentation = "Banma Studio";
 	console.log('complete: ' + compstr);
 	console.log(origText.length);
 	console.log('insertText:' + aliOSItem.insertText);

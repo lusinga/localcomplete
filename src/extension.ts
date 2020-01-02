@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
-import {getLine, getLastDot, processCompletion} from './codeutil';
+import {getLine, getLastDot, processCompletion, checkStatus, processCompletionAll} from './codeutil';
 
 
 const instance = axios.create({
@@ -25,17 +25,23 @@ export function activate(context: vscode.ExtensionContext) {
 			console.log('Line Count=' + document.lineCount);
 			const origText = getLine(document, position).trim();
 
-			let item: vscode.CompletionItem = await instance.post('/complete', { code: origText})
+			let items: vscode.CompletionItem[] = await instance.post('/complete', { code: origText})
 				.then(function (response: any) {
 					let compstr: string = <string> response.data.trim();
-					return processCompletion(compstr, origText);
+					let status = checkStatus(compstr);
+					if(status==0){
+						return processCompletionAll(compstr, origText);
+					}
+					else{
+						return [new vscode.CompletionItem('No suggestion')];
+					}
 				})
 				.catch(function (error: Error) {
 					console.log(error);
-					return new vscode.CompletionItem('No suggestion');
+					return [new vscode.CompletionItem('No suggestion')];
 				});
 
-			return [item];
+			return items;
 
 			/*
 			// a simple completion item which inserts `Hello World!`
