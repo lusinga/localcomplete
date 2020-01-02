@@ -24,7 +24,7 @@ export function getLine(document: vscode.TextDocument, position: vscode.Position
 			codeInput = prevLine.text + "\n" + code;
 		}
 	}
-	console.log("code=" + code+",codeInput="+codeInput);
+	//console.log("code=" + code+",codeInput="+codeInput);
 	return [code, codeInput];
 }
 
@@ -44,9 +44,9 @@ export function getLastDot(compStr: string): string {
 //将最后一个后面不为空的"."前面的字符截取掉。
 //因为补全的新信息中也可能有"."，所以先在源数据中做判断，取这部分的长度，再去补全结果中把前面这些部分去掉
 export function processDot(origStr: string, compStr: string): string {
-	console.log('Origin String:');
-	console.log(origStr);
-	console.log(compStr);
+	// console.log('Origin String:');
+	// console.log(origStr);
+	// console.log(compStr);
 	const lastChar = origStr.charAt(origStr.length - 1);
 	let noHeadStr: string;
 	let pos: number;
@@ -71,7 +71,7 @@ export function processDot(origStr: string, compStr: string): string {
 
 
 export function checkStatus(jsonstr: string): number{
-	console.log("Jsonstr="+jsonstr);
+	// console.log("Jsonstr="+jsonstr);
 	let jsonobj = JSON.parse(jsonstr);
 	let status = jsonobj.status;
 	return status;
