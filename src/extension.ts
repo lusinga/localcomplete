@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 import axios from 'axios';
-import {getLine, getLastDot, processCompletion, checkStatus, processCompletionAll} from './codeutil';
+import { getLine, getLastDot, processCompletion, checkStatus, processCompletionAll } from './codeutil';
 
 
 const instance = axios.create({
@@ -15,7 +15,7 @@ const instance = axios.create({
 
 export function activate(context: vscode.ExtensionContext) {
 
-	let provider1 = vscode.languages.registerCompletionItemProvider(['javascript','typescript'], {
+	let provider1 = vscode.languages.registerCompletionItemProvider(['javascript', 'typescript'], {
 
 		async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
 			console.log('document version=' + document.version);
@@ -23,16 +23,16 @@ export function activate(context: vscode.ExtensionContext) {
 			console.log('URI is:' + document.uri);
 			console.log('Language ID=' + document.languageId);
 			console.log('Line Count=' + document.lineCount);
-			const origText = getLine(document, position).trim();
+			const [origText, inputText] = getLine(document, position);
 
-			let items: vscode.CompletionItem[] = await instance.post('/complete', { code: origText})
+			let items: vscode.CompletionItem[] = await instance.post('/complete', { code: inputText })
 				.then(function (response: any) {
-					let compstr: string = <string> response.data.trim();
-					let status = checkStatus(compstr);
-					if(status==0){
-						return processCompletionAll(compstr, origText);
+					console.log(response.data);
+					const responseobj = response.data;
+					if (responseobj.status === 0) {
+						return processCompletionAll(responseobj, origText.trim());
 					}
-					else{
+					else {
 						return [new vscode.CompletionItem('No suggestion')];
 					}
 				})
