@@ -100,8 +100,9 @@ def code_complete():
     return process_code(code2.get('code'))
 
 
-# MODEL = '/workspace/xulun/out4/'
-MODEL = '/mnt/out4/'
+#MODEL = '/workspace/xulun/out4/'
+MODEL = '/workspace/xulun/out_banmalite/'
+#MODEL = '/mnt/out4/'
 
 # 加载词汇表
 tokenizer = GPT2Tokenizer.from_pretrained(MODEL)

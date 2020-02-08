@@ -124,9 +124,11 @@ def code_complete():
     return result
 
 
-CUDA = False
+#CUDA = False
+CUDA = True
 # MODEL = '/workspace/xulun/out4/'
-MODEL = '/workspace/xulun/out_banmalite/'
+# MODEL = '/workspace/xulun/out_banmalite/'
+MODEL = '/workspace/xulun/out_common_2020_0122/'
 
 # 加载词汇表
 tokenizer = GPT2Tokenizer.from_pretrained(MODEL)
